@@ -7,6 +7,7 @@ export default class ImageSlider {
   sliderListEl;
   nextBtnEl;
   prevBtnEl;
+  indicatorWrapEl;
 
   constructor() {
     this.assignElement();
@@ -43,6 +44,18 @@ export default class ImageSlider {
   addEvent() {
     this.nextBtnEl.addEventListener('click', this.moveToRight.bind(this));
     this.prevBtnEl.addEventListener('click', this.moveToLeft.bind(this));
+    this.indicatorWrapEl.addEventListener(
+      'click',
+      this.onClickIndicator.bind(this),
+    );
+  }
+
+  onClickIndicator(event) {
+    if (Number.isInteger(parseInt(event.target.dataset.index))) {
+      const index = Number(event.target.dataset.index);
+      console.log(index);
+      this.sliderWrapEl.style.left = `-${index * 1000}px`;
+    }
   }
 
   moveToRight() {
@@ -53,7 +66,7 @@ export default class ImageSlider {
     this.sliderListEl.style.left = `-${
       this.#slideWidth * this.#currentPosition
     }px`;
-    console.log(this.#currentPosition);
+    this.setIndicator();
   }
   moveToLeft() {
     this.#currentPosition -= 1;
@@ -63,7 +76,7 @@ export default class ImageSlider {
     this.sliderListEl.style.left = `-${
       this.#slideWidth * this.#currentPosition
     }px`;
-    console.log(this.#currentPosition);
+    this.setIndicator();
   }
 
   createIndicator() {
@@ -77,6 +90,9 @@ export default class ImageSlider {
   }
 
   setIndicator() {
-    const li = this.indicatorWrapEl.querySelectorAll('li');
+    this.indicatorWrapEl.querySelector('.active')?.classList.remove('active');
+    this.indicatorWrapEl
+      .querySelector(`ul li:nth-child(${this.#currentPosition + 1})`)
+      .classList.add('active');
   }
 }
